@@ -2,7 +2,6 @@ import express from "express"
 import dotenv from "dotenv"
 import mongoose from "mongoose"
 import TrekRoute from "./Routes/Trek.js"
-import TourRoute from "./Routes/Tour.js"
 import UserRoute from "./Routes/User.js"
 import BatchRoute from "./Routes/Batch.js"
 import BookRoute from "./Routes/Book.js"
@@ -29,7 +28,6 @@ app.use(bodyParser.json());
 
 app.use("/uploads",express.static('uploads'))
 app.use("/trek", TrekRoute);
-app.use("/tour",TourRoute)
 app.use("/auth",UserRoute)
 app.use("/batch",BatchRoute );
 app.use("/book",BookRoute );

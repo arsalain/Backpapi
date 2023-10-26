@@ -2,12 +2,17 @@ import mongoose from "mongoose";
 const TrekSchema = new mongoose.Schema(
   {
     name: { type: String },
+    maintype: { type: String },
+    statetype: { type: String },
     state: { type: String },
     for: {type: String },
-    fromamount: { type: String },
+    fromamount: { type: Number },
+    withoutamount : {type: Number},
+    reserveamount: {type: Number},
     day: { type: String },
     trektype: { type: String },
     trektypename: { type: String },
+    testimage: { type:String },
     level: { type: String },
     levelname: { type: String },
     service: { type: String },
@@ -17,9 +22,12 @@ const TrekSchema = new mongoose.Schema(
     lead1name: { type: String },
     lead1oc: { type: String },
     lead1pimg: { type: String },
+    lead1pimgalt: { type: String },
     lead2name: { type: String },
     lead2oc: { type: String },
     lead2pimg: { type: String },
+    lead2pimgalt: { type: String },
+    itinerary: { type: String},
     days: [{
       day: {
           type: String,
@@ -34,10 +42,82 @@ const TrekSchema = new mongoose.Schema(
       image: {
           type: String,
       },
+      imagealt: {
+        type: String,
+      }
   }],
-  over: [String],
-    batches: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Batch' }],
+  expectpara: {
+    type: String
   },
+  expecthead1: {
+    type: String
+  },
+  expecthead1para:{
+    type: String
+  },
+  expecthead2: {
+    type: String
+  },
+  expecthead2para:{
+    type: String
+  },
+  over: [String],
+  included: [String],
+  notincluded: [String],
+  things:  [String], 
+  faq:  [{
+    question: {
+        type: String,
+    },
+    answer: {
+        type: String,
+    },
+}],
+  related: [{
+    rday: {
+        type: String,
+    },
+    rname: {
+        type: String,
+    },
+    ramount:  {
+      type: Number,
+  },
+    rimage: {
+        type: String,
+    },
+    rimagealt: {
+      type: String,
+    },
+    rtype: {
+      type: String,
+  },
+  rtypename: {
+      type: String,
+  },
+  rlevel: {
+    type: String,
+},
+rlevelname: {
+    type: String,
+},
+rservice: {
+  type: String,
+},
+rservicename: {
+  type: String,
+},
+}],
+    batch: [{
+      date: {
+        type: String,
+      },
+      amount: {
+        type: Number,
+      }
+    }],
+  },
+
   { timestamps: true }
 );
 

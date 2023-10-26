@@ -7,15 +7,17 @@ import {
     getTrekshort,
     getTrekwaterfall,
     getTrekById,
-    updateTrekById
+    updateTrekById,
+    getTreksall
 } from "../Controllers/trek.js"
 import {upload } from "../Middleware/upload.js"
 const router = express.Router();
 
 
-router.post("/createtrek",upload.fields([{name: 'testimage'}, { name: 'image' }] ),createTrek);
-router.put("/updatetrek/:id",upload.fields([{name: 'testimage'}, { name: 'coverimage' }, {name : "planimg1"}, {name : "planimg2"}, {name : "planimg3"}, {name : "planimg4"}, {name : "planimg5"}, {name : "planimg6"}, {name : "planimg7"}, {name : "planimg8"}, {name : "planimg9"}, {name : "planimg10"},{name : "similarimg1"} , {name : "similarimg2"}, {name : "similarimg3"},{name : "reviewimg1"} , {name : "reviewimg2"}, {name : "reviewimg3"}      ] ),updateTrekById);
+router.post("/createtrek",upload.fields([{name: 'testimage'},{name: 'lead1pimg'}, {name: 'lead2pimg'}, { name: 'dayImage[0]' },  { name: 'dayImage[1]' },  { name: 'dayImage[2]' },  { name: 'dayImage[3]' },  { name: 'dayImage[4]' },  { name: 'dayImage[5]' },  { name: 'dayImage[6]' },  { name: 'dayImage[7]' },  { name: 'dayImage[8]' },  { name: 'dayImage[9]' },  { name: 'relatedImage[0]' },  { name: 'relatedImage[1]' },  { name: 'relatedImage[2]' }] ),createTrek);
+router.patch("/updatetrek/:id",upload.fields([{name: 'testimage'},{name: 'lead1pimg'}, {name: 'lead2pimg'}, { name: 'dayImage[0]' },  { name: 'dayImage[1]' },  { name: 'dayImage[2]' },  { name: 'dayImage[3]' },  { name: 'dayImage[4]' },  { name: 'dayImage[5]' },  { name: 'dayImage[6]' },  { name: 'dayImage[7]' },  { name: 'dayImage[8]' },  { name: 'dayImage[9]' },  { name: 'relatedImage[0]' },  { name: 'relatedImage[1]' },  { name: 'relatedImage[2]' }]  ),updateTrekById);
 router.get("/:id",getTrekById)
+router.get("/",getTreksall)
 router.get("/gettreks",getTreks)
 router.get("/gettrekrecom",getTrekrecom)
 router.get("/gettreklong",getTreklong)
