@@ -7,9 +7,6 @@ const BookSchema = new mongoose.Schema(
     eventName: {
       type: String,
     },
-    batchname: {
-        type: String, 
-    },
     batchDate: {
         type: Date,
         default: function () {
@@ -45,17 +42,14 @@ const BookSchema = new mongoose.Schema(
     source: {
         type: String,
     },
-    discount: {
-        type: String,
-    },
     amount: {
         type: Number,
     },
-    amountrefunded: {
-        type: Number,
+    withtransport: {
+      type: String,
     },
-    pendingamount: {
-        type: Number,
+    withouttransport: {
+      type: String,
     },
     gst: {
         type: String, 
