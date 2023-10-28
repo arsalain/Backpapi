@@ -42,14 +42,23 @@ const BookSchema = new mongoose.Schema(
     source: {
         type: String,
     },
+    totalamount:{
+      type: String,
+    },
     amount: {
         type: Number,
     },
+    payableamount:{
+      type: Number,
+    },
+    pendingamount:{
+      type: Number,
+    },
     withtransport: {
-      type: String,
+      type: Number,
     },
     withouttransport: {
-      type: String,
+      type: Number,
     },
     gst: {
         type: String, 

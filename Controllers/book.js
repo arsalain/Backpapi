@@ -50,6 +50,9 @@ export const savepayment = async (req,res,next)=>{
       source:req.body.source,
       gst: req.body.gst,
       amount:req.body.amount,
+      totalamount: req.body.totalamount,
+      payableamount: req.body.payableamount,
+      pendingamount: req.body.pendingamount,
       withtransport: req.body.withtransport,
       withouttransport: req.body.withouttransport,
       razorpayOrderId:req.body.razorpayOrderId,
@@ -59,7 +62,7 @@ export const savepayment = async (req,res,next)=>{
     await newPayment.save();
 
     const userConfirmationEmail = `
-    Thank you for your payment. Your payment of $${req.body.amount} has been successfully processed. Be ready at ${req.body.selecteddate}.
+    Thank you for your payment. Your payment of INR${req.body.amount} has been successfully processed. Be ready at ${req.body.selecteddate}.
   `;
 
   // Replace the following with your email configuration
@@ -91,16 +94,60 @@ export const savepayment = async (req,res,next)=>{
 
   recipients.forEach((recipient) => {
     const adminNotificationEmail = `
-      Payment received from ${req.body.username}.
-      Amount: $${req.body.amount}
+    <html>
+    <head>
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            td, th {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+        </style>
+    </head>
+    <body>
+    <h1>Backpackers United </h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>BOOKING DESCRIPTION</th>
+                    <th>BOOKING QTY.</th>
+                    <th>TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>${req.body.eventName || 'null'} <br> ${req.body.selecteddate}</td>
+                    <td>
+                    With Transportation From Bangalore: ${req.body.withtransport || '0'} qty <br />
+                    Without Transportation:  ${req.body.withouttransport || '0'} qty</td>
+                    <td>${req.body.totalamount || 'null'}</td>
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+        <br>
+        <p>GST (INR): ${req.body.gst || 'null'}</p>
+        <p>Payment Gateway Charges (INR): ${req.body.paymentGatewayCharges || '0/-'}</p>
+        <p>Payable Amount (INR): ${req.body.payableamount || 'null'}</p>
+        <p>Amount Paid: ${req.body.amount}</p>
+        <p>Pending Amount (INR) (Inclusive of Payment Gateway Charges): ${req.body.pendingamount || 'null'}</p>
+        <p>Name: ${req.body.username}</p>
+        <p>Phone Number: ${req.body.phonenumber}</p>
+        <p>Email: ${req.body.email}</p>
+    </body>
+    </html>
     `;
-
+    
     const adminMailOptions = {
-      from: 'info@backpackersunited.in',
-      to: recipient,
-      subject: 'New Payment Received',
-      text: adminNotificationEmail,
+        from: 'info@backpackersunited.in',
+        to: recipient,
+        subject: 'New Payment Received',
+        html: adminNotificationEmail,
     };
+    
 
     transporter.sendMail(adminMailOptions, (error) => {
       if (error) {

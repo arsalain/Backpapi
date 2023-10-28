@@ -274,39 +274,6 @@ export const updateTrekById = async (req, res, next) => {
     TrekData[field] = [];
   }
 });
-//       const TrekData = {
-//         name:req.body.name ,
-//         fromamount: req.body.fromamount,
-//         maintype: req.body.maintype,
-//         statetype: req.body.statetype,
-//         reserveamount:req.body.reserveamount,
-//         for: req.body.for,
-//         day: req.body.day,
-//         trektype: req.body.trektype,
-//         trektypename : req.body.trektypename,
-//         level: req.body.level,
-//         levelname: req.body.levelname,
-//         service: req.body.service,
-//         servicename: req.body.servicename,
-//         state: req.body.state,
-//         statename : req.body.statename,
-//         expertpara:req.body.expertpara,
-//         lead1name:req.body.lead1name,
-//         lead1oc:req.body.lead1oc,
-//         lead1pimgalt:req.body.lead1pimgalt,
-//         lead2name:req.body.lead2name,
-//         lead2oc: req.body.lead2oc,
-//         lead2pimgalt: req.body.lead2pimgalt,
-//         itinerary: req.body.itinerary,
-//         days: [],
-//         over: [],
-//         included: [],
-//         notincluded: [],
-//         things: [],
-//         faq: [],
-//         related: [],
-//         batch: []
-// }
 
 if (req.files.testimage) {
   TrekData.testimage = req.files.testimage[0].filename;
