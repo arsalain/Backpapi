@@ -14,6 +14,7 @@ const TrekSchema = new mongoose.Schema(
     trektype: { type: String },
     trektypename: { type: String },
     testimage: { type:String },
+    testimagealt: { type:String },
     level: { type: String },
     levelname: { type: String },
     service: { type: String },

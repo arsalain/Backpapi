@@ -95,11 +95,11 @@ export const createTrek = async (req, res, next) => {
   try {
     // Extract the trek information from the request body
     const {
-      name, amount, fromamount, maintype, statetype, reserveamount, for1, day,
+      name, amount,testimagealt, fromamount, maintype, statetype, reserveamount, for1, day,
       trektype, trektypename, level, levelname, service, servicename, state, statename,
       expertpara, lead1name, lead1oc, lead1pimgalt, lead2name, lead2oc, lead2pimgalt,
       itinerary, expectpara, expecthead1, expecthead1para, expecthead2, expecthead2para,
-      related, batch
+      days, related, batch 
     } = req.body;
     console.log(req.body.days);
     console.log(req.body)
@@ -108,18 +108,34 @@ export const createTrek = async (req, res, next) => {
       return res.status(400).send('Days data is missing');
     }
     
-    let daysArray;
+    let daysArray, relatedArray, batchArray;
+
     try {
-      daysArray = JSON.parse(req.body.days);
+      daysArray = JSON.parse(days);
     } catch (error) {
-      return res.status(400).send('Invalid days data');
+      return res.status(400).send('Invalid days data: ' + error.message);
     }
+
+    try {
+      relatedArray = JSON.parse(related);
+    } catch (error) {
+      return res.status(400).send('Invalid related data: ' + error.message);
+    }
+
+    try {
+      batchArray = JSON.parse(batch);
+    } catch (error) {
+      // Ensure this error message is for batch, not a copy-paste error
+      return res.status(400).send('Invalid batch data: ' + error.message);
+    }
+    console.log(daysArray, relatedArray, batchArray);
     const included = req.body.included instanceof Array ? req.body.included : [req.body.included];
     const notincluded = req.body.notincluded instanceof Array ? req.body.notincluded : [req.body.notincluded];
     const things = req.body.things instanceof Array ? req.body.things : [req.body.things];
+    const over = req.body.over instanceof Array ? req.body.over : [req.body.over];
     // Construct the Trek data from the request body
     const TrekData = {
-      name, amount, fromamount, maintype, statetype, reserveamount, for1, day,
+      name, amount,testimagealt, fromamount, maintype, statetype, reserveamount, for1, day,
       trektype, trektypename, level, levelname, service, servicename, state, statename,
       expertpara, lead1name, lead1oc, lead1pimgalt, lead2name, lead2oc, lead2pimgalt,
       itinerary, expectpara, expecthead1, expecthead1para, expecthead2, expecthead2para,
@@ -127,12 +143,9 @@ export const createTrek = async (req, res, next) => {
       included,
       notincluded,
       things,
-      // over: parseArrayData(over),
-      // included: parseArrayData(included),
-      // notincluded: parseArrayData(notincluded),
-      // things: parseArrayData(things),
-      // related: parseArrayData(related, 'related', req.files),
-      // batch: parseArrayData(batch, 'batch')
+      over,
+      related: relatedArray,
+      batch:batchArray
     };
 console.log("hey",TrekData )
 console.log("Parsed days data", TrekData.days);
@@ -158,11 +171,11 @@ console.log("Parsed days data", TrekData.days);
     });
     
     // Assign images to related images, assuming TrekData.related is an array
-    // TrekData.related.forEach((relatedItem, index) => {
-    //   if(req.files[`relatedImage[${index}]`]) {
-    //     relatedItem.image = req.files[`relatedImage[${index}]`][0].filename;
-    //   }
-    // });
+    TrekData.related.forEach((relatedItem, index) => {
+      if(req.files[`relatedImage[${index}]`]) {
+        relatedItem.rimage = req.files[`relatedImage[${index}]`][0].filename;
+      }
+    });
 
     // Create a new Trek instance and save to the database
     const newTrek = new Trek(TrekData);
@@ -181,16 +194,7 @@ console.log("Parsed days data", TrekData.days);
 };
 
 // Utility function to parse array data from the request
-function parseArrayData(dataArray, fieldName = '', files) {
-  if (!dataArray) return [];
 
-  return dataArray.map((item, index) => {
-    if (fieldName && files && files[`${fieldName}Image[${index}]`]) {
-      item.image = files[`${fieldName}Image[${index}]`][0].filename;
-    }
-    return item;
-  });
-}
 
 
 // Utility function to assign image filenames to TrekData
