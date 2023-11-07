@@ -92,160 +92,112 @@ export const getTrekById = async (req, res) => {
   }
 }
 export const createTrek = async (req, res, next) => {
-
-  const TrekData = {
-          name:req.body.name ,
-          fromamount: req.body.fromamount,
-          maintype: req.body.maintype,
-          statetype: req.body.statetype,
-          reserveamount:req.body.reserveamount,
-          for: req.body.for,
-          day: req.body.day,
-          trektype: req.body.trektype,
-          trektypename : req.body.trektypename,
-          level: req.body.level,
-          levelname: req.body.levelname,
-          service: req.body.service,
-          servicename: req.body.servicename,
-          state: req.body.state,
-          statename : req.body.statename,
-          expertpara:req.body.expertpara,
-          lead1name:req.body.lead1name,
-          lead1oc:req.body.lead1oc,
-          lead1pimgalt:req.body.lead1pimgalt,
-          lead2name:req.body.lead2name,
-          lead2oc: req.body.lead2oc,
-          lead2pimgalt: req.body.lead2pimgalt,
-          itinerary: req.body.itinerary,
-          expectpara: req.body.expectpara,
-          expecthead1: req.body.expecthead1,
-          expecthead1para: req.body.expecthead1para,
-          expecthead2: req.body.expecthead2,
-          expecthead2para: req.body.expecthead2para,
-          days: [],
-          over: [],
-          included: [],
-          notincluded: [],
-          things: [],
-          faq: [],
-          related: [],
-          batch: []
-  }
-  
-  if (req.files.testimage) {
-    TrekData.testimage = req.files.testimage[0].filename;
-}
-if (req.files.lead1pimg) {
-  TrekData.lead1pimg = req.files.lead1pimg[0].filename;
-}
-if (req.files.lead2pimg) {
-  TrekData.lead2pimg = req.files.lead2pimg[0].filename;
-}
-// console.log("data",req.body )
-let dayIndex = 0;
-while (req.body.days && req.body.days[dayIndex] && req.body.days[dayIndex].day) {
-  const descriptions = [];
-
-  // Iterate through descriptions for the current day, assuming description is an array
-  if (req.body.days[dayIndex].description) {
-      descriptions.push(...req.body.days[dayIndex].description);
-  }
-
-  const dayData = {
-      day: req.body.days[dayIndex].day,
-      cityName: req.body.days[dayIndex].cityName,
-      description: descriptions,
-      meals: req.body.days[dayIndex].meals,
-      imagealt:req.body.days[dayIndex].imagealt
-  };
-  console.log("iamge",req.body )
-  // if (req.files && req.files[`dayImage${dayIndex}`]) {
-  //     dayData.image = req.files[`dayImage${dayIndex}`][0].filename;
-  // }
-  if (req.files && req.files[`dayImage[${dayIndex}]`]) {
-    dayData.image = req.files[`dayImage[${dayIndex}]`][0].filename;
-}
-  TrekData.days.push(dayData);
-  dayIndex++;
-}
-let overIndex = 0;
-console.log(req.body.over[overIndex],"hii")
-while (req.body.over[overIndex]) {
-    TrekData.over.push(req.body.over[overIndex]);
-    overIndex++;
-}
-let includedIndex = 0
-while (req.body.included[includedIndex]) {
-  TrekData.included.push(req.body.included[includedIndex]);
-  includedIndex++;
-}
-let notincludedIndex = 0
-while (req.body.notincluded[notincludedIndex]) {
-  TrekData.notincluded.push(req.body.notincluded[notincludedIndex]);
-  notincludedIndex++;
-}
-let thingsIndex = 0
-while (req.body.things[thingsIndex]) {
-  TrekData.things.push(req.body.things[thingsIndex]);
-  thingsIndex++;
-}
-// Iterate through req.body.over and add elements to the 'over' array
-let faqIndex = 0;
-while (req.body.faq && req.body.faq[faqIndex] ) {
-
-  const faqData = {
-      question: req.body.faq[faqIndex].question,
-      answer: req.body.faq[faqIndex].answer,
-  };
-  TrekData.faq.push(faqData);
-  faqIndex++;
-}
-let relatedIndex = 0;
-while (req.body.related && req.body.related[relatedIndex] ) {
-  const relatedData = {
-      rday: req.body.related[relatedIndex].rday,
-      rname: req.body.related[relatedIndex].rname,
-      rimagealt: req.body.related[relatedIndex].rimagealt,
-      ramount: req.body.related[relatedIndex].ramount,
-      rtype: req.body.related[relatedIndex].rtype,
-      rtypename: req.body.related[relatedIndex].rtypename,
-      rlevel: req.body.related[relatedIndex].rlevel,
-      rlevelname: req.body.related[relatedIndex].rlevelname,
-      rservice: req.body.related[relatedIndex].rservice,
-      rservicename: req.body.related[relatedIndex].rservicename,
-  };
-  if (req.files && req.files[`relatedImage[${relatedIndex}]`]) {
-    relatedData.rimage = req.files[`relatedImage[${relatedIndex}]`][0].filename;
-}
-  TrekData.related.push(relatedData);
-  relatedIndex++;
-}
-let batchIndex = 0;
-while (req.body.batch && req.body.batch[batchIndex] ) {
-
-  const batchData = {
-    date: req.body.batch[batchIndex].date,
-      amount: req.body.batch[batchIndex].amount,
-  };
-  TrekData.batch.push(batchData);
-  batchIndex++;
-}
   try {
+    // Extract the trek information from the request body
+    const {
+      name, amount, fromamount, maintype, statetype, reserveamount, for1, day,
+      trektype, trektypename, level, levelname, service, servicename, state, statename,
+      expertpara, lead1name, lead1oc, lead1pimgalt, lead2name, lead2oc, lead2pimgalt,
+      itinerary, expectpara, expecthead1, expecthead1para, expecthead2, expecthead2para,
+      related, batch
+    } = req.body;
+    console.log(req.body.days);
+    console.log(req.body)
+    // console.log(days);
+    if (!req.body.days) {
+      return res.status(400).send('Days data is missing');
+    }
+    
+    let daysArray;
+    try {
+      daysArray = JSON.parse(req.body.days);
+    } catch (error) {
+      return res.status(400).send('Invalid days data');
+    }
+    const included = req.body.included instanceof Array ? req.body.included : [req.body.included];
+    const notincluded = req.body.notincluded instanceof Array ? req.body.notincluded : [req.body.notincluded];
+    const things = req.body.things instanceof Array ? req.body.things : [req.body.things];
+    // Construct the Trek data from the request body
+    const TrekData = {
+      name, amount, fromamount, maintype, statetype, reserveamount, for1, day,
+      trektype, trektypename, level, levelname, service, servicename, state, statename,
+      expertpara, lead1name, lead1oc, lead1pimgalt, lead2name, lead2oc, lead2pimgalt,
+      itinerary, expectpara, expecthead1, expecthead1para, expecthead2, expecthead2para,
+      days: daysArray,
+      included,
+      notincluded,
+      things,
+      // over: parseArrayData(over),
+      // included: parseArrayData(included),
+      // notincluded: parseArrayData(notincluded),
+      // things: parseArrayData(things),
+      // related: parseArrayData(related, 'related', req.files),
+      // batch: parseArrayData(batch, 'batch')
+    };
+console.log("hey",TrekData )
+console.log("Parsed days data", TrekData.days);
+// daysArray.forEach((day, index) => {
+//   assignImageToDay(req.files, `days[${index}].image`, day);
+// });
+    // Add images if they exist
+    function assignImageToField(files, fieldName, dataObject) {
+      if (files && files[fieldName]) {
+        // Handle single image
+        dataObject[fieldName] = files[fieldName][0].filename;
+      }
+    }
+    assignImageToField(req.files, 'testimage', TrekData);
+    assignImageToField(req.files, 'lead1pimg', TrekData);
+    assignImageToField(req.files, 'lead2pimg', TrekData);
+    
+    // Assign images to day images, assuming TrekData.days is an array
+    TrekData.days.forEach((day, index) => {
+      if(req.files && req.files[`dayImage[${index}]`]) {
+        day.image = req.files[`dayImage[${index}]`][0].filename;
+      }
+    });
+    
+    // Assign images to related images, assuming TrekData.related is an array
+    // TrekData.related.forEach((relatedItem, index) => {
+    //   if(req.files[`relatedImage[${index}]`]) {
+    //     relatedItem.image = req.files[`relatedImage[${index}]`][0].filename;
+    //   }
+    // });
+
+    // Create a new Trek instance and save to the database
     const newTrek = new Trek(TrekData);
     await newTrek.save();
 
+    // Send the response back to the client
     res.json({
-        message: 'Images and data uploaded and saved to MongoDB',
-        data: newTrek
+      message: 'Trek successfully created',
+      data: newTrek
     });
-} catch (err) {
-  console.error(err);
-  console.log("hey")
-    res.status(500).send('Error saving to MongoDB:', err.message);
-}
-  
 
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: 'Error saving to MongoDB', error: err.message });
+  }
 };
+
+// Utility function to parse array data from the request
+function parseArrayData(dataArray, fieldName = '', files) {
+  if (!dataArray) return [];
+
+  return dataArray.map((item, index) => {
+    if (fieldName && files && files[`${fieldName}Image[${index}]`]) {
+      item.image = files[`${fieldName}Image[${index}]`][0].filename;
+    }
+    return item;
+  });
+}
+
+
+// Utility function to assign image filenames to TrekData
+
+
+// Add other utility functions as needed...
+
 export const updateTrekById = async (req, res, next) => {
 
       const { id } = req.params;
@@ -253,7 +205,7 @@ export const updateTrekById = async (req, res, next) => {
 
 // Conditional assignment for scalar fields
 [
-  'name', 'fromamount', 'maintype', 'statetype',
+  'name','amount', 'fromamount', 'maintype', 'statetype',
   'reserveamount', 'for', 'day', 'trektype', 
   'trektypename', 'level', 'levelname', 'service',
   'servicename', 'state', 'statename', 'expertpara',
@@ -277,6 +229,12 @@ export const updateTrekById = async (req, res, next) => {
 
 if (req.files.testimage) {
   TrekData.testimage = req.files.testimage[0].filename;
+}
+if (req.files.lead1pimg) {
+  TrekData.lead1pimg = req.files.lead1pimg[0].filename;
+}
+if (req.files.lead2pimg) {
+  TrekData.lead2pimg = req.files.lead2pimg[0].filename;
 }
 console.log("data",req.body )
 let dayIndex = 0;
