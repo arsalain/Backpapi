@@ -4,7 +4,7 @@ import { createDest, deleteDest, getDestByName, updateDestByName } from "../Cont
 const router = express.Router();
 
 
-router.post("/createdest",upload.fields([{name: 'coverimage'},{name: 'blogimage1'}, {name: 'blogimage2'},{name: 'blogimage3'} ] ),createDest);
+router.post("/createdest",upload.fields([{name: 'coverimage'} ] ),createDest);
 router.patch("/updatedest/:name",upload.fields([{name: 'coverimage'},{name: 'blogimage1'}, {name: 'blogimage2'},{name: 'blogimage3'}]  ),updateDestByName);
 router.get("/:name",getDestByName)
 router.delete("/:name",deleteDest)

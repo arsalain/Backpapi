@@ -1,38 +1,33 @@
 import Dest from "../Model/Dest.js"
 
 export const createDest = async (req, res, next) => {
+  try {
+  const {
+    name,
+    imgagealt,
+
+  } = req.body;
+  
+  const over = req.body.over instanceof Array ? req.body.over : [req.body.over];
+  const products = req.body.products instanceof Array ? req.body.products : [req.body.products];
+  const blogs = req.body.blogs instanceof Array ? req.body.blogs : [req.body.blogs];
     const DestData = {
-      name: req.body.name,
-      maintype: req.body.maintype,
-      over: [],
-      products: req.body.products, // Assuming it's an array of product IDs
-      blogname1: req.body.blogname1,
-      blogpara1: req.body.blogpara1,
-      blogbutton1: req.body.blogbutton1,
-      blogalt1: req.body.blogalt1,
-      blogname2: req.body.blogname2,
-      blogpara2: req.body.blogpara2,
-      blogbutton2: req.body.blogbutton2,
-      blogalt2: req.body.blogalt2,
-      blogname3: req.body.blogname3,
-      blogpara3: req.body.blogpara3,
-      blogbutton3: req.body.blogbutton3,
-      blogalt3: req.body.blogalt3,
+      name,
+      imgagealt,
+      products,
+      over,
+      blogs
     };
-    if (req.files.coverimage) {
-      DestData.coverimage = req.files.coverimage[0].filename;
+
+  // const blog = req.body.blog instanceof Array ? req.body.blog : [req.body.blog];
+  function assignImageToField(files, fieldName, dataObject) {
+    if (files && files[fieldName]) {
+      // Handle single image
+      dataObject[fieldName] = files[fieldName][0].filename;
     }
-    if (req.files.blogimage1) {
-      DestData.blogimage1 = req.files.blogimage1[0].filename;
   }
-  if (req.files.blogimage2) {
-    DestData.blogimage2 = req.files.blogimage2[0].filename;
-  }
-  if (req.files.blogimage3) {
-    DestData.blogimage3 = req.files.blogimage3[0].filename;
-  }
-  // c
-    try {
+  assignImageToField(req.files, 'coverimage', DestData);
+
       const newDest = new Dest(DestData);
       await newDest.save();
   
@@ -123,7 +118,7 @@ export const createDest = async (req, res, next) => {
   export const getDestByName= async (req,res,next)=>{
     try {
       const name = req.params.name;
-      const dest = await Dest.findOne({ name });
+      const dest = await Dest.findOne({ name }).populate('products');
       if (!dest) {
         return res.status(404).json({ error: "Destination not found" });
       }
