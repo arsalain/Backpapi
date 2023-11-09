@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 const TrekSchema = new mongoose.Schema(
   {
     name: { type: String },
+    urllink: {type: String},
     maintype: { type: String },
     statetype: { type: String },
     state: { type: String },

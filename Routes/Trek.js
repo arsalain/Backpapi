@@ -6,9 +6,11 @@ import {
     getTreklong,
     getTrekshort,
     getTrekwaterfall,
-    getTrekById,
     updateTrekById,
-    getTreksall
+    getTreksall,
+    getTrekByName,
+    getTourByName,
+    getTrekById
 } from "../Controllers/trek.js"
 import {upload } from "../Middleware/upload.js"
 const router = express.Router();
@@ -24,7 +26,9 @@ router.post("/createtrek", upload.fields([
     ...Array.from({ length: 3 }, (_, i) => ({ name: `relatedImage[${i}]` })),
   ]),createTrek);
 router.patch("/updatetrek/:id",upload.fields([{name: 'testimage'},{name: 'lead1pimg'}, {name: 'lead2pimg'}, { name: 'dayImage[0]' },  { name: 'dayImage[1]' },  { name: 'dayImage[2]' },  { name: 'dayImage[3]' },  { name: 'dayImage[4]' },  { name: 'dayImage[5]' },  { name: 'dayImage[6]' },  { name: 'dayImage[7]' },  { name: 'dayImage[8]' },  { name: 'dayImage[9]' },  { name: 'relatedImage[0]' },  { name: 'relatedImage[1]' },  { name: 'relatedImage[2]' }]  ),updateTrekById);
+router.get("/trek/:name",getTrekByName)
 router.get("/:id",getTrekById)
+router.get("/tour/:name",getTourByName)
 router.get("/",getTreksall)
 router.get("/gettreks",getTreks)
 router.get("/gettrekrecom",getTrekrecom)

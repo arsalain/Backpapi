@@ -5,7 +5,7 @@ export const createDest = async (req, res, next) => {
   const {
     name,
     imgagealt,
-
+    maintype
   } = req.body;
   
   const over = req.body.over instanceof Array ? req.body.over : [req.body.over];
@@ -13,6 +13,7 @@ export const createDest = async (req, res, next) => {
   const blogs = req.body.blogs instanceof Array ? req.body.blogs : [req.body.blogs];
     const DestData = {
       name,
+      maintype,
       imgagealt,
       products,
       over,
@@ -127,3 +128,4 @@ export const createDest = async (req, res, next) => {
       res.status(500).json({ error: "Could not retrieve destination" });
     }
   }
+  

@@ -75,7 +75,36 @@ export const getTreks= async (req,res,next)=>{
   }
 
   
-
+  const tourTypes = ['grouptour', 'longtour', 'international', 'northindiatour'];
+  const trekTypes = ['northindiatrek', 'karnatakatrek', 'keralatrek', 'tmtrek'];
+  
+  // Middleware function to get tours by name
+ export const getTourByName = async (req, res) => {
+    try {
+      const linkName = req.params.name;
+      const tour = await Trek.findOne({ urllink: linkName, maintype: { $in: tourTypes } })
+      if (!tour) {
+        return res.status(404).json({ error: "Tour not found" });
+      }
+      res.status(200).json(tour);
+    } catch (error) {
+      res.status(500).json({ error: "Could not retrieve tour" });
+    }
+  };
+  
+  // Middleware function to get treks by name
+  export const getTrekByName = async (req, res) => {
+    try {
+      const name = req.params.name;
+      const trek = await Trek.findOne({ name, maintype: { $in: trekTypes } })
+      if (!trek) {
+        return res.status(404).json({ error: "Trek not found" });
+      }
+      res.status(200).json(trek);
+    } catch (error) {
+      res.status(500).json({ error: "Could not retrieve trek" });
+    }
+  };
   
 export const getTrekById = async (req, res) => {
   try {
@@ -214,7 +243,7 @@ export const updateTrekById = async (req, res, next) => {
   'trektypename', 'level', 'levelname', 'service',
   'servicename', 'state', 'statename', 'expertpara',
   'lead1name', 'lead1oc', 'lead1pimgalt', 'lead2name',
-  'lead2oc', 'lead2pimgalt', 'itinerary'
+  'lead2oc', 'lead2pimgalt', 'itinerary','urllink'
 ].forEach(field => {
   if (req.body[field]) {
     TrekData[field] = req.body[field];
