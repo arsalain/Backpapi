@@ -5,6 +5,7 @@ export const createDest = async (req, res, next) => {
   const {
     name,
     imgagealt,
+    urllink,
     maintype
   } = req.body;
   
@@ -14,6 +15,7 @@ export const createDest = async (req, res, next) => {
     const DestData = {
       name,
       maintype,
+      urllink,
       imgagealt,
       products,
       over,

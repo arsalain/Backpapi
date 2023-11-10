@@ -95,8 +95,8 @@ export const getTreks= async (req,res,next)=>{
   // Middleware function to get treks by name
   export const getTrekByName = async (req, res) => {
     try {
-      const name = req.params.name;
-      const trek = await Trek.findOne({ name, maintype: { $in: trekTypes } })
+      const linkName = req.params.name;
+      const trek = await Trek.findOne({  urllink: linkName, maintype: { $in: trekTypes } })
       if (!trek) {
         return res.status(404).json({ error: "Trek not found" });
       }
@@ -124,7 +124,7 @@ export const createTrek = async (req, res, next) => {
   try {
     // Extract the trek information from the request body
     const {
-      name, amount,testimagealt, fromamount, maintype, statetype, reserveamount, for1, day,
+      name, amount,testimagealt, fromamount, maintype, urllink, statetype, reserveamount, for1, day,
       trektype, trektypename, level, levelname, service, servicename, state, statename,
       expertpara, lead1name, lead1oc, lead1pimgalt, lead2name, lead2oc, lead2pimgalt,
       itinerary, expectpara, expecthead1, expecthead1para, expecthead2, expecthead2para,
@@ -164,7 +164,7 @@ export const createTrek = async (req, res, next) => {
     const over = req.body.over instanceof Array ? req.body.over : [req.body.over];
     // Construct the Trek data from the request body
     const TrekData = {
-      name, amount,testimagealt, fromamount, maintype, statetype, reserveamount, for1, day,
+      name, amount,testimagealt, fromamount, maintype, urllink, statetype, reserveamount, for1, day,
       trektype, trektypename, level, levelname, service, servicename, state, statename,
       expertpara, lead1name, lead1oc, lead1pimgalt, lead2name, lead2oc, lead2pimgalt,
       itinerary, expectpara, expecthead1, expecthead1para, expecthead2, expecthead2para,
