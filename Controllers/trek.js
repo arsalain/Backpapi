@@ -120,6 +120,26 @@ export const getTrekById = async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 }
+
+export const getTreksMain = async (req, res, next) => {
+  try {
+    let treks = await Trek.find(
+      {},
+      {  name: 1 } // Projection: include id and name, exclude _id
+    );
+
+    let { q } = req.query;
+
+    if (q) {
+      treks = treks.filter(x => x.name.toLowerCase().includes(q));
+    }
+
+    res.status(200).json(treks);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const createTrek = async (req, res, next) => {
   try {
     // Extract the trek information from the request body

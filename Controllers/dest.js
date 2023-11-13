@@ -48,8 +48,8 @@ export const createDest = async (req, res, next) => {
   // Delete a destination by name
   export const deleteDest= async (req,res,next)=>{
     try {
-      const name = req.params.name;
-      const deletedDest = await Dest.findOneAndDelete({ name });
+      const { id } = req.params;
+      const deletedDest = await Dest.findByIdAndDelete(id);
       if (!deletedDest) {
         return res.status(404).json({ error: "Destination not found" });
       }
@@ -58,18 +58,42 @@ export const createDest = async (req, res, next) => {
       res.status(500).json({ error: "Could not delete destination" });
     }
   }
-
+  export const getDestsall = async (req,res,next)=>{
+    try {
+      const dests = await Dest.find();
+      // res.status(200).json(treks);
+      res.status(200).json({ success: true, data: dests });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  }
+  export const getDestMain = async (req, res, next) => {
+    try {
+      let dests = await Dest.find(
+        {},
+        {  name: 1 } // Projection: include id and name, exclude _id
+      );
   
+      let { q } = req.query;
+  
+      if (q) {
+        dests = dests.filter(x => x.name.toLowerCase().includes(q));
+      }
+  
+      res.status(200).json(dests);
+    } catch (err) {
+      next(err);
+    }
+  };
   // Update a destination by name
-  export const updateDestByName = async (req, res, next) => {
-    const { name } = req.params;
+  export const updateDestById = async (req, res, next) => {
+    // const { name } = req.params;
+    const { id } = req.params;
     const DestData = {};
   
     // Conditional assignment for scalar fields
     [
-      'name', 'maintype', 'blogname1', 'blogpara1', 'blogbutton1', 'blogimage1', 'blogalt1',
-      'blogname2', 'blogpara2', 'blogbutton2', 'blogimage2', 'blogalt2',
-      'blogname3', 'blogpara3', 'blogbutton3', 'blogimage3', 'blogalt3'
+      'name', 'maintype','urllink'
     ].forEach(field => {
       if (req.body[field]) {
         DestData[field] = req.body[field];
@@ -77,7 +101,7 @@ export const createDest = async (req, res, next) => {
     });
   
     // Conditional assignment for array fields
-    ['over', 'products'].forEach(field => {
+    ['over', 'products','blogs'].forEach(field => {
         if (req.body[field] && req.body[field].length > 0) {
           DestData[field] = [];
         }
@@ -85,26 +109,27 @@ export const createDest = async (req, res, next) => {
       if (req.files.coverimage) {
         DestData.coverimage = req.files.coverimage[0].filename;
       }
-      if (req.files.blogimage1) {
-        DestData.blogimage1 = req.files.blogimage1[0].filename;
-    }
-    if (req.files.blogimage2) {
-      DestData.blogimage2 = req.files.blogimage2[0].filename;
-    }
-    if (req.files.blogimage3) {
-      DestData.blogimage3 = req.files.blogimage3[0].filename;
-    }
     // Iterate through req.body.over and add elements to the 'over' array
     let overIndex = 0;
     while (req.body.over && req.body.over[overIndex]) {
       DestData.over.push(req.body.over[overIndex]);
       overIndex++;
     }
-    if (req.body.products && req.body.products.length > 0) {
-        DestData.products = req.body.products; 
+    let productsIndex = 0;
+    while (req.body.products && req.body.products[productsIndex]) {
+      DestData.products.push(req.body.products[productsIndex]);
+      productsIndex++;
       }
+      let blogsIndex = 0;
+      while (req.body.blogs && req.body.blogs[blogsIndex]) {
+        DestData.blogs.push(req.body.blogs[blogsIndex]);
+        blogsIndex++;
+        }
+      // if (req.body.blogs && req.body.blogs.length > 0) {
+      //   DestData.blogs = req.body.blogs; 
+      // }
     try {
-      const updatedDest = await Dest.findOneAndUpdate({ name }, DestData, { new: true });
+      const updatedDest = await Dest.findByIdAndUpdate(id, DestData, { new: true });
   
       if (!updatedDest) {
         return res.status(404).json({ message: 'Destination not found' });
@@ -120,8 +145,9 @@ export const createDest = async (req, res, next) => {
   // Get a destination by name
   export const getDestByName= async (req,res,next)=>{
     try {
-      const name = req.params.name;
-      const dest = await Dest.findOne({ name }).populate('products');
+      // const name = req.params.name;
+      const linkName = req.params.name;
+      const dest = await Dest.findOne({urllink: linkName}).populate('products');
       if (!dest) {
         return res.status(404).json({ error: "Destination not found" });
       }
@@ -131,3 +157,46 @@ export const createDest = async (req, res, next) => {
     }
   }
   
+  // destinationController.js
+
+// Function to find destinations by main type: south India
+export const getDestinationsSouthIndia = async (req, res, next) => {
+  try {
+    const destinations = await Dest.find({ maintype: 'southindia' });
+    console.log('Destinations:', destinations);
+    if (destinations.length === 0) {
+      return res.status(404).json({ error: 'South Destination not found' });
+    }
+    res.json(destinations);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+// Function to find destinations by main type: north India
+export const getDestinationsNorthIndia = async (req, res, next) => {
+  try {
+    const destinations = await Dest.find({ maintype: 'northindia' });
+    if (!destinations) {
+      return res.status(404).json({ error: 'North Destination not found' });
+    }
+    res.json(destinations);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+// Function to find destinations by main type: international
+export const getDestinationsInternational = async (req, res, next) => {
+  try {
+    const destinations = await Dest.find({ maintype: 'international' });
+    if (!destinations) {
+      return res.status(404).json({ error: 'International Destination not found' });
+    }
+    res.json(destinations);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};

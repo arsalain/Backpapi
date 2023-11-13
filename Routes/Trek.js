@@ -10,12 +10,15 @@ import {
     getTreksall,
     getTrekByName,
     getTourByName,
-    getTrekById
+    getTrekById,
+    getTreksMain
 } from "../Controllers/trek.js"
 import {upload } from "../Middleware/upload.js"
 const router = express.Router();
 
 
+router.get("/main",getTreksMain)
+router.get("/",getTreksall)
 router.post("/createtrek", upload.fields([
     { name: 'testimage' },
     { name: 'lead1pimg' },
@@ -29,7 +32,6 @@ router.patch("/updatetrek/:id",upload.fields([{name: 'testimage'},{name: 'lead1p
 router.get("/trek/:name",getTrekByName)
 router.get("/:id",getTrekById)
 router.get("/tour/:name",getTourByName)
-router.get("/",getTreksall)
 router.get("/gettreks",getTreks)
 router.get("/gettrekrecom",getTrekrecom)
 router.get("/gettreklong",getTreklong)
