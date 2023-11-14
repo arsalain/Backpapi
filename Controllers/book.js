@@ -41,7 +41,12 @@ export const verifypayment = async (req,res,next)=>{
 export const savepayment = async (req,res,next)=>{
 
   try {
+    const paymentCount = await Book.countDocuments();
+
+    // Generate a unique booking ID
+    const bookingId = `bpu${Date.now()}${paymentCount + 1}`;
     const newPayment = new Book({
+      bookingId,
       eventName: req.body.eventName,
       selecteddate: req.body.selecteddate,
       username: req.body.username,
@@ -143,7 +148,7 @@ export const savepayment = async (req,res,next)=>{
     
     const adminMailOptions = {
         from: 'info@backpackersunited.in',
-        to: recipient,
+        to: recipients,
         subject: 'New Payment Received',
         html: adminNotificationEmail,
     };

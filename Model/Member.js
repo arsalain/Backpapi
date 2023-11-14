@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
-const BookSchema = new mongoose.Schema(
+const MemberSchema = new mongoose.Schema(
   {
-    bookingId: {
+    memberId: {
       type: String,
     },
-    eventName: {
+    passtype: {
       type: String,
     },
     batchDate: {
@@ -27,10 +27,19 @@ const BookSchema = new mongoose.Schema(
       return `${hours}:${minutes}`;
     },
   },
-  slecteddate: {
+  activationdate: {
     type: String,
   },
-    username: {
+  expiringdate: {
+    type: String,
+  },
+  title: {
+    type: String,
+},
+    firstname: {
+        type: String,
+    },
+    lastname: {
         type: String,
     },
     phonenumber: {
@@ -39,29 +48,14 @@ const BookSchema = new mongoose.Schema(
     email:{
       type: String,
   },
-    source: {
-        type: String,
-    },
+  amount: {
+    type: Number,
+},
+gst: {
+    type: Number, 
+},
     totalamount:{
       type: Number,
-    },
-    amount: {
-        type: Number,
-    },
-    payableamount:{
-      type: Number,
-    },
-    pendingamount:{
-      type: Number,
-    },
-    withtransport: {
-      type: Number,
-    },
-    withouttransport: {
-      type: Number,
-    },
-    gst: {
-        type: Number, 
     },
     razorpayOrderId: {
         type: String, 
@@ -73,4 +67,4 @@ const BookSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Book", BookSchema);
+export default mongoose.model("Member", MemberSchema);

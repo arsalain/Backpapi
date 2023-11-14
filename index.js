@@ -6,6 +6,7 @@ import UserRoute from "./Routes/User.js"
 import BatchRoute from "./Routes/Batch.js"
 import BookRoute from "./Routes/Book.js"
 import DestRoute from "./Routes/Dest.js"
+import MemberRoute from "./Routes/Member.js"
 import bodyParser from "body-parser";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -33,6 +34,7 @@ app.use("/auth",UserRoute)
 app.use("/batch",BatchRoute );
 app.use("/book",BookRoute );
 app.use("/dest", DestRoute);
+app.use("/member", MemberRoute);
 app.use((err, req, res, next) => {
     const status = err.status || 500;
     const message = err.message || "Something went wrong!";
