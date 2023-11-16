@@ -1,23 +1,34 @@
 import express from "express";
 import {
     createTrek,
-    getTrekrecom,
-    getTreks,
-    getTreklong,
-    getTrekshort,
-    getTrekwaterfall,
     updateTrekById,
     getTreksall,
     getTrekByName,
     getTourByName,
     getTrekById,
-    getTreksMain
+    getTreksMain,
+    getTreksLongTour,
+    getTreksInternational,
+    getTreksNorthIndiaTour,
+    getTreksNorthIndiaTrek,
+    getTreksKarnatakaTrek,
+    getTreksKeralaTrek,
+    getTreksTNTrek,
+    getTreksGroupTour
 } from "../Controllers/trek.js"
 import {upload } from "../Middleware/upload.js"
 const router = express.Router();
 
 
 router.get("/main",getTreksMain)
+router.get('/grouptour', getTreksGroupTour);
+router.get('/longtour', getTreksLongTour);
+router.get('/international', getTreksInternational);
+router.get('/northindiatour', getTreksNorthIndiaTour);
+router.get('/northindiatrek', getTreksNorthIndiaTrek);
+router.get('/karnatakatrek', getTreksKarnatakaTrek);
+router.get('/keralatrek', getTreksKeralaTrek);
+router.get('/tntrek', getTreksTNTrek);
 router.get("/",getTreksall)
 router.post("/createtrek", upload.fields([
     { name: 'testimage' },
@@ -32,10 +43,6 @@ router.patch("/updatetrek/:id",upload.fields([{name: 'testimage'},{name: 'lead1p
 router.get("/trek/:name",getTrekByName)
 router.get("/:id",getTrekById)
 router.get("/tour/:name",getTourByName)
-router.get("/gettreks",getTreks)
-router.get("/gettrekrecom",getTrekrecom)
-router.get("/gettreklong",getTreklong)
-router.get("/gettrekshort",getTrekshort)
-router.get("/gettrekwaterfall",getTrekwaterfall)
+
 
 export default router;

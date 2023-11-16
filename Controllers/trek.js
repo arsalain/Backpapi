@@ -1,21 +1,7 @@
 import Trek from "../Model/Trek.js";
 import multer from "multer"
 
-export const getTreks= async (req,res,next)=>{
-    try {
-      let treks = await Trek.find({filtertype:{
-        "$ne": "recommended"
-      }});
-      let {q} = req.query;
-      console.log(q)
-      if (q) {
-        treks = treks.filter(x => x.name.toLowerCase().includes(q))
-    }
-      res.status(200).json(treks.splice(0,3));
-    } catch (err) {
-      next(err);
-    }
-  }
+
   export const getTreksall = async (req,res,next)=>{
     try {
       const treks = await Trek.find();
@@ -25,54 +11,7 @@ export const getTreks= async (req,res,next)=>{
       res.status(500).json({ success: false, error: error.message });
     }
   }
-  export const getTrekrecom = async (req,res,next)=>{
-    try {
-      const treks = await Trek.find({filtertype:"recommended"});
-      res.status(200).json(treks);
-    } catch (err) {
-      next(err);
-    }
-  }
-  export const getTreklong = async (req,res,next)=>{
-    try {
-      const treks = await Trek.find({filtertype:"long"});
-      res.status(200).json(treks);
-    } catch (err) {
-      next(err);
-    }
-  }
-  export const getTrekshort = async (req,res,next)=>{
-    try {
-      const treks = await Trek.find({filtertype:"short"});
-      res.status(200).json(treks);
-    } catch (err) {
-      next(err);
-    }
-  }
-  export const getTrekwaterfall = async (req,res,next)=>{
-    try {
-      const treks = await Trek.find({filtertype:"waterfall"});
-      res.status(200).json(treks);
-    } catch (err) {
-      next(err);
-    }
-  }
 
-  export const getTrek = async (req,res,next)=>{
-    try {
-      const treks = await Trek.find({filtertype:"recommended"});
-      const {q} = req.query;
-      const keys = ["name","state","amount"]
-
-    treks =  treks.filter((item) =>
-          keys.some((key) => item[key].toLowerCase().includes(q))
-        )
-      
-      res.status(200).json(treks);
-    } catch (err) {
-      next(err);
-    }
-  }
 
   
   const tourTypes = ['grouptour', 'longtour', 'international', 'northindiatour'];
@@ -354,27 +293,37 @@ const faqData = {
 };
 TrekData.faq.push(faqData);
 faqIndex++;
-}
+}// Ensure TrekData.related is an array before the loop.
+// Initialize TrekData.related if not already
+
 let relatedIndex = 0;
+console.log("hey",req.body)
 while (req.body.related && req.body.related[relatedIndex] ) {
-const relatedData = {
-    rday: req.body.related[relatedIndex].day,
-    rname: req.body.related[relatedIndex].rname,
-    rimagealt: req.body.related[relatedIndex].rimagealt,
-    ramount: req.body.related[relatedIndex].ramount,
-    rtype: req.body.related[relatedIndex].rtype,
-    rtypename: req.body.related[relatedIndex].rtypename,
-    rlevel: req.body.related[relatedIndex].rlevel,
-    rlevelname: req.body.related[relatedIndex].rlevelname,
-    rservice: req.body.related[relatedIndex].rservice,
-    rservicename: req.body.related[relatedIndex].rservicename,
-};
-if (req.files && req.files[`relatedImage[${dayIndex}]`]) {
-  relatedData.rimage = req.files[`relatedImage[${dayIndex}]`][0].filename;
-}
-TrekData.related.push(relatedData);
-dayIndex++;
-}
+  const relatedData = {
+      rday: req.body.related[relatedIndex].rday,
+      rname: req.body.related[relatedIndex].rname,
+      rimagealt: req.body.related[relatedIndex].rimagealt,
+      ramount: req.body.related[relatedIndex].ramount,
+      rtype: req.body.related[relatedIndex].rtype,
+      rtypename: req.body.related[relatedIndex].rtypename,
+      rlevel: req.body.related[relatedIndex].rlevel,
+      rlevelname: req.body.related[relatedIndex].rlevelname,
+      rservice: req.body.related[relatedIndex].rservice,
+      rservicename: req.body.related[relatedIndex].rservicename,
+  };
+  if (req.files && req.files[`relatedImage[${relatedIndex}]`]) {
+    relatedData.rimage = req.files[`relatedImage[${relatedIndex}]`][0].filename;
+  }
+  TrekData.related.push(relatedData);
+  relatedIndex++;
+  }
+
+
+
+console.log('Final TrekData.related:', TrekData.related);
+
+
+
 let batchIndex = 0;
 while (req.body.batch && req.body.batch[batchIndex] ) {
 
@@ -397,4 +346,112 @@ try {
       return res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
- 
+export const getTreksGroupTour = async (req, res, next) => {
+  try {
+    const treks = await Trek.find({ maintype: "grouptour" });
+    if (treks.length === 0) {
+      return res.status(404).json({ error: 'Group Tour not found' });
+    }
+    res.json(treks);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+// Long Tour
+export const getTreksLongTour = async (req, res, next) => {
+  try {
+    const trekslong = await Trek.find({ maintype: "longtour" });
+    if (trekslong.length === 0) {
+      return res.status(404).json({ error: 'Long Tour not found' });
+    }
+    res.json(trekslong);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+// International
+export const getTreksInternational = async (req, res, next) => {
+  try {
+    const treks = await Trek.find({ maintype: 'international' });
+    if (treks.length === 0) {
+      return res.status(404).json({ error: 'International Tour not found' });
+    }
+    res.json(treks);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+// North India Tour
+export const getTreksNorthIndiaTour = async (req, res, next) => {
+  try {
+    const treks = await Trek.find({ maintype: 'northindiatour' });
+    if (treks.length === 0) {
+      return res.status(404).json({ error: 'North India Tour not found' });
+    }
+    res.json(treks);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+// North India Trek
+export const getTreksNorthIndiaTrek = async (req, res, next) => {
+  try {
+    const treks = await Trek.find({ maintype: 'northindiatrek' });
+    if (treks.length === 0) {
+      return res.status(404).json({ error: 'North India Trek not found' });
+    }
+    res.json(treks);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+// Karnataka Trek
+export const getTreksKarnatakaTrek = async (req, res, next) => {
+  try {
+    const treks = await Trek.find({ maintype: 'karnatakatrek' });
+    if (treks.length === 0) {
+      return res.status(404).json({ error: 'Karnataka Trek not found' });
+    }
+    res.json(treks);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+// Kerala Trek
+export const getTreksKeralaTrek = async (req, res, next) => {
+  try {
+    const treks = await Trek.find({ maintype: 'keralatrek' });
+    if (treks.length === 0) {
+      return res.status(404).json({ error: 'Kerala Trek not found' });
+    }
+    res.json(treks);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+// Tamil Nadu Trek
+export const getTreksTNTrek = async (req, res, next) => {
+  try {
+    const treks = await Trek.find({ maintype: 'tntrek' });
+    if (treks.length === 0) {
+      return res.status(404).json({ error: 'Tamil Nadu Trek not found' });
+    }
+    res.json(treks);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
