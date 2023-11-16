@@ -41,4 +41,17 @@ export const createBlog = async (req, res, next) => {
         res.status(500).send('Error creating destination:', err.message);
       }
     };
+    export const getBlogByName = async (req, res) => {
+      try {
+        const linkName = req.params.name;
+        const blog = await Blog.findOne({  urllink: linkName }).populate('products');
+        if (!blog) {
+          return res.status(404).json({ error: "Blog not found" });
+        }
+        res.status(200).json(blog);
+      } catch (error) {
+        res.status(500).json({ error: "Could not retrieve blog" });
+      }
+    };
+
     
