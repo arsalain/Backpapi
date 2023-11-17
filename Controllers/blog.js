@@ -54,4 +54,12 @@ export const createBlog = async (req, res, next) => {
       }
     };
 
-    
+    export const getBlogssall = async (req,res,next)=>{
+      try {
+        const blogs = await Blog.find();
+        // res.status(200).json(treks);
+        res.status(200).json({ success: true, data: blogs });
+      } catch (err) {
+        res.status(500).json({ success: false, error: error.message });
+      }
+    }
