@@ -147,7 +147,7 @@ export const createDest = async (req, res, next) => {
     try {
       // const name = req.params.name;
       const linkName = req.params.name;
-      const dest = await Dest.findOne({urllink: linkName}).populate('products');
+      const dest = await Dest.findOne({urllink: linkName}).populate('products').populate('blogs');
       if (!dest) {
         return res.status(404).json({ error: "Destination not found" });
       }
