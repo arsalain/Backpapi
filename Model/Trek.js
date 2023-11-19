@@ -68,6 +68,7 @@ const TrekSchema = new mongoose.Schema(
   included: [String],
   notincluded: [String],
   things:  [String], 
+  relatedtreks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Trek' }],
   faq:  [{
     question: {
         type: String,

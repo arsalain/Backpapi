@@ -1,5 +1,5 @@
 import Trek from "../Model/Trek.js";
-import multer from "multer"
+
 
 
   export const getTreksall = async (req,res,next)=>{
@@ -12,8 +12,6 @@ import multer from "multer"
     }
   }
 
-
-  
   const tourTypes = ['grouptour', 'longtour', 'international', 'northindiatour'];
   const trekTypes = ['northindiatrek', 'karnatakatrek', 'keralatrek', 'tmtrek'];
   
@@ -21,7 +19,7 @@ import multer from "multer"
  export const getTourByName = async (req, res) => {
     try {
       const linkName = req.params.name;
-      const tour = await Trek.findOne({ urllink: linkName, maintype: { $in: tourTypes } })
+      const tour = await Trek.findOne({ urllink: linkName, maintype: { $in: tourTypes } }).populate("relatedtreks")
       if (!tour) {
         return res.status(404).json({ error: "Tour not found" });
       }
@@ -35,7 +33,7 @@ import multer from "multer"
   export const getTrekByName = async (req, res) => {
     try {
       const linkName = req.params.name;
-      const trek = await Trek.findOne({  urllink: linkName, maintype: { $in: trekTypes } })
+      const trek = await Trek.findOne({  urllink: linkName, maintype: { $in: trekTypes } }).populate("relatedtreks")
       if (!trek) {
         return res.status(404).json({ error: "Trek not found" });
       }
@@ -121,6 +119,7 @@ export const createTrek = async (req, res, next) => {
     const notincluded = req.body.notincluded instanceof Array ? req.body.notincluded : [req.body.notincluded];
     const things = req.body.things instanceof Array ? req.body.things : [req.body.things];
     const over = req.body.over instanceof Array ? req.body.over : [req.body.over];
+    const relatedtreks = req.body.relatedtreks instanceof Array ? req.body.relatedtreks : [req.body.relatedtreks];
     // Construct the Trek data from the request body
     const TrekData = {
       name, amount,testimagealt, fromamount, maintype, urllink, statetype, reserveamount, for1, day,
@@ -133,7 +132,8 @@ export const createTrek = async (req, res, next) => {
       things,
       over,
       related: relatedArray,
-      batch:batchArray
+      batch:batchArray,
+      relatedtreks
     };
 console.log("hey",TrekData )
 console.log("Parsed days data", TrekData.days);
@@ -212,7 +212,7 @@ export const updateTrekById = async (req, res, next) => {
 // Conditional assignment for array fields
 [
   'days', 'over', 'included', 'notincluded',
-  'things', 'faq', 'related', 'batch'
+  'things', 'faq', 'related', 'batch', 'relatedtreks'
 ].forEach(field => {
   if (req.body[field] && req.body[field].length > 0) {
     TrekData[field] = [];
@@ -283,6 +283,13 @@ TrekData.things.push(req.body.things[thingsIndex]);
 thingsIndex++;
 }
 }
+if (req.body && req.body.relatedtreks) {
+  let relatedtreksIndex = 0
+  while (req.body.relatedtreks[relatedtreksIndex]) {
+  TrekData.relatedtreks.push(req.body.relatedtreks[relatedtreksIndex]);
+  relatedtreksIndex++;
+  }
+  }
 // Iterate through req.body.over and add elements to the 'over' array
 let faqIndex = 0;
 while (req.body.faq && req.body.faq[faqIndex] ) {
