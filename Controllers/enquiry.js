@@ -5,7 +5,7 @@ export const postEnquiry = async (req, res, next) => {
     try {
       const { name, email, phone, password, message, callback } = req.body;
   
-      const newEnquiry = new Enquiry({ name, email, phone, password, message, callback });
+      const newEnquiry = new Enq({ name, email, phone, password, message, callback });
       await newEnquiry.save();
   
       res.status(201).send(newEnquiry);
