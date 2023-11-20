@@ -7,6 +7,7 @@ import BookRoute from "./Routes/Book.js"
 import DestRoute from "./Routes/Dest.js"
 import MemberRoute from "./Routes/Member.js"
 import BlogRoute from "./Routes/Blog.js"
+import EnqRoute from "./Routes/Enquiry.js"
 import bodyParser from "body-parser";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -35,6 +36,8 @@ app.use("/book",BookRoute );
 app.use("/dest", DestRoute);
 app.use("/member", MemberRoute);
 app.use("/blog", BlogRoute);
+app.use("/enquiry", EnqRoute);
+
 app.use((err, req, res, next) => {
     const status = err.status || 500;
     const message = err.message || "Something went wrong!";
