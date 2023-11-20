@@ -30,6 +30,9 @@ const BookSchema = new mongoose.Schema(
   slecteddate: {
     type: String,
   },
+  tickets:{
+    type: String,
+  },
     username: {
         type: String,
     },
